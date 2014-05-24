@@ -20,6 +20,18 @@ namespace application\gopher
 			header('X-Gopher-Version:'.self::VERSION);
 			header('X-Nutshell-Version:'.Nutshell::VERSION);
 			
+			$this->plugin->Mongo();
+			
+			//Bind collections as a shortcut.
+			$this->nutshell->registerGetHook
+			(
+				'collection',
+				function()
+				{
+					return $this->plugin->Mongo();
+				}
+			);
+			
 			//Initiate the MVC.
 			try
 			{
