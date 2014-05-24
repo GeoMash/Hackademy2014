@@ -1,0 +1,23 @@
+{
+	"name":             "geomash/hackademy",
+	"description":      "Hackademy 2014 App",
+	"authors":
+    [
+        {
+            "name": "GeoMash",
+            "email":"support@geomash.com"
+        }
+    ],
+	"require":
+	{
+		"geomash/installer": "dev-master",
+		"nutshell/nutshell": "dev-1.1.0.dev"
+	},
+	"repositories":
+	[
+		{
+			"type": "composer",
+            "url": "http://composer.geomash.com/"
+		}
+    ]
+}
