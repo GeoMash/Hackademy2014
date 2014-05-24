@@ -26,8 +26,8 @@ namespace application\gopher\controller
 			$this->collection->task->insert
 			(
 				[
-					'user_id'	=>$userId,
-					'steps'		=>$steps
+					'requested_user_id'	=>$userId,
+					'steps'				=>$steps
 				]
 			);
 			$this->respond();
