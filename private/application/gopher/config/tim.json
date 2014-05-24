@@ -1,0 +1,20 @@
+{
+	"extends":	"dev",
+	"config":
+	{
+		"application":
+		{
+			"mode": "development"
+		},
+		"plugin":
+		{
+			"Mongo":
+			{
+				"host":			"192.168.1.50",
+				"port":			27017,
+				"timeout":		2000,
+				"database":     "geomash_master"
+			}
+		}
+	}
+}

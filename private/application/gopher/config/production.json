@@ -1,0 +1,62 @@
+{
+	"config":
+	{
+		"core":
+		{
+			"exception":
+			{
+				"details":
+				[
+					"POST",
+					"GET",
+					"RAW"
+				]
+			} 
+		},
+		"application":
+		{
+			"mode": 		"production",
+			"dataDir":		"/datastore/GeoMashData/",
+			"tmpDir":		"/tmp/"
+		},
+		"plugin":
+		{
+			"Mongo":
+			{
+				"host":			"192.168.0.171",
+				"port":			27017,
+				"timeout":		2000,
+				"database":     "geomash_master"
+			},
+			"Session":
+			{
+				"storage": 	"file"
+			},
+			"Logger": 
+			{
+				"writers": 
+				{
+					"rootLog": 
+					{
+						"class":			"DailyFileWriter",
+						"output":			"/var/log/Gopher/root-{DATE}.log",
+						"mode":				666
+					}
+				},
+				"loggers": 
+				{
+					"__ROOT__": 
+					{
+						"writers":
+						[
+							{
+								"writer":	"rootLog",
+								"level" :	"DEBUG" 
+							}
+						]
+					}
+				}
+			}
+		}
+	}
+}
