@@ -19,6 +19,7 @@ namespace application\gopher
 			
 			header('X-Gopher-Version:'.self::VERSION);
 			header('X-Nutshell-Version:'.Nutshell::VERSION);
+			header('Access-Control-Allow-Origin: *');
 			
 			$this->plugin->Mongo();
 			
