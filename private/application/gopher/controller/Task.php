@@ -3,6 +3,7 @@ namespace application\gopher\controller
 {
 	use application\gopher\base\APIController;
 	use \MongoId;
+	use \MongoDate;
 
 	class Task extends APIController
 	{
@@ -13,9 +14,9 @@ namespace application\gopher\controller
 			$this->respond($resultSet);
 		}
 		
-		public function getByUserId($userId)
+		public function getByUserId($userId,$type='requested')
 		{
-			$cursor		=$this->collection->task->find(['user_id'=>$userId]);
+			$cursor		=$this->collection->task->find([$type.'_user_id'=>$userId]);
 			$resultSet	=$this->getAllResults($cursor);
 			$this->respond($resultSet);
 		}
@@ -44,7 +45,7 @@ namespace application\gopher\controller
 			}
 			//---------- DEBUG CODE
 			
-			$cursor=$this->collection->operator->find();
+			$cursor		=$this->collection->operator->find();
 			$operators	=$this->getAllResults($cursor);
 			$operator	=$operators[mt_rand(0,count($operators)-1)];
 			
@@ -53,6 +54,7 @@ namespace application\gopher\controller
 			
 			$task=
 			[
+				'timestamp_created'	=>new MongoDate(time()),
 				'requested_user_id'	=>$userId,
 				'assigned_user_id'	=>$operator['debugId'],
 				'steps'				=>$steps
@@ -74,6 +76,24 @@ namespace application\gopher\controller
 					'message'	=>'You have received a new job. Click to view the first task.',
 					'step'		=>0,
 					'read'		=>false
+				]
+			);
+			$this->respond();
+		}
+		
+		public function getTaskSteps($taskId)
+		{
+			$task=$this->collection->task->findOne(['_id'=>new MongoId($taskId)]);
+			$this->respond($task,(bool)$task);
+		}
+		
+		public function setStepStatus($taskId,$stepNumber,$status)
+		{
+			$this->collection->task->update
+			(
+				['_id'=>new MongoId($taskId)],
+				[
+					'$set'=>['steps.'.$stepNumber.'.properties.status'=>$status]
 				]
 			);
 			$this->respond();
