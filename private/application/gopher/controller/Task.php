@@ -24,17 +24,10 @@ namespace application\gopher\controller
 		{
 			$userId	=$this->request->get('user_id');
 			$steps	=$this->request->get('steps');
-			$task=$this->collection->task->insert
-			(
-				[
-					'requested_user_id'	=>$userId,
-					'steps'				=>$steps
-				]
-			);
 			if (isset($steps[0]['geometry']['coordinates']))
 			{
 				//Find the nearest idiot to do the job.
-				$operator=$this->collection->operator->find
+				$operator=$this->collection->operator->findOne
 				(
 					[
 						'GeoJSON.geometry.coordinates'=>
@@ -43,23 +36,46 @@ namespace application\gopher\controller
 						]
 					]
 				);
-				//Notify him that he has to do a stupid job.
-				$this->collection->notification->insert
-				(
-					[
-						'user_id'=>$operator->id,
-						'type'=>
-						[
-							'name'	=>'task',
-							'id'	=>new MongoId("53810be93e60d34f2182c9aa")
-						],
-						'title'		=>"Task Progress",
-						'message'	=>"Your Operator has just completed another step!",
-						'step'		=>1,
-						'read'		=>false
-					]
-				);
 			}
+			else if (isset($steps[0]['properties']['address']))
+			{
+				//TODO: Geocode Address
+				
+			}
+			//---------- DEBUG CODE
+			
+			$cursor=$this->collection->operator->find();
+			$operators	=$this->getAllResults($cursor);
+			$operator	=$operators[mt_rand(0,count($operators)-1)];
+			
+			//---------- /DEBUG CODE
+			
+			
+			$task=
+			[
+				'requested_user_id'	=>$userId,
+				'assigned_user_id'	=>$operator['debugId'],
+				'steps'				=>$steps
+			];
+			$this->collection->task->insert($task);
+			
+			
+			//Notify him that he has to do a stupid job.
+			$this->collection->notification->insert
+			(
+				[
+					'user_id'=>$operator['debugId'],
+					'type'=>
+					[
+						'name'	=>'task',
+						'id'	=>$task['_id']
+					],
+					'title'		=>'New Job',
+					'message'	=>'You have received a new job. Click to view the first task.',
+					'step'		=>0,
+					'read'		=>false
+				]
+			);
 			$this->respond();
 		}
 	}
