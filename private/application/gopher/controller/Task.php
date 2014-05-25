@@ -89,11 +89,28 @@ namespace application\gopher\controller
 		
 		public function setStepStatus($taskId,$stepNumber,$status)
 		{
+			$task=$this->collection->task->findOne(['_id'=>new MongoId($taskId)]);
 			$this->collection->task->update
 			(
 				['_id'=>new MongoId($taskId)],
 				[
 					'$set'=>['steps.'.$stepNumber.'.properties.status'=>$status]
+				]
+			);
+			
+			$this->collection->notification->insert
+			(
+				[
+					'user_id'=>$task['requested_user_id'],
+					'type'=>
+					[
+						'name'	=>'task',
+						'id'	=>$task['_id']
+					],
+					'title'		=>'Task Progressed',
+					'message'	=>'Your Operator has just completed another step!',
+					'step'		=>$stepNumber,
+					'read'		=>false
 				]
 			);
 			$this->respond();
