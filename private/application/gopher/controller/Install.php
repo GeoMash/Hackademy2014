@@ -7,7 +7,6 @@ namespace application\gopher\controller
 	{
 		public function index()
 		{
-			$this->collection->operator->
 			$operators=
 			[
 				[
